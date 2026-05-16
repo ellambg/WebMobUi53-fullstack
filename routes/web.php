@@ -31,6 +31,10 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/auth/login', 'login');
 });
 
+Route::get('/vote/{token}', function ($token) {
+    return view('polls.vote', ['token' => $token]);
+})->name('polls.vote');
+
 Route::middleware('auth')->group(function () {
     Route::get('/polls/dashboard', PollDashboardController::class)->name('polls.dashboard');
     Route::resource('posts', PostController::class)->except(['index', 'show']);
