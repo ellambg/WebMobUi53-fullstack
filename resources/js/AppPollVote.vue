@@ -135,12 +135,13 @@ usePolling(loadResults, 5000);
                     v-for="option in poll.options"
                     :key="option.id"
                     class="option"
-                    :class="{ selected: selectedOptions.includes(option.id) }"
+                    :class="{ selected: selectedOptions.includes(option.id), voted: alreadyVoted }"
                     @click="
                         !voteSuccess &&
                         !isExpired &&
                         !poll.is_draft &&
-                        isAuthenticated
+                        isAuthenticated &&
+                        !alreadyVoted
                             ? toggleOption(option.id)
                             : null
                     "
@@ -318,5 +319,14 @@ h1 {
     border: 1px solid #feb2b2;
     margin-bottom: 1rem;
     font-weight: 600;
+}
+
+.option.voted {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+.option.voted:hover {
+    border-color: #e2e8f0;
+    background: white;
 }
 </style>
