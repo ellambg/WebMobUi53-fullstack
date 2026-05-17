@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useFetchApi } from '@/composables/useFetchApi';
 import { usePolling } from '@/composables/usePolling';
+import PollChart from '@/components/PollChart.vue';
 
 const props = defineProps({
   token: { type: String, required: true },
@@ -127,6 +128,8 @@ usePolling(loadResults, 5000);
           </div>
         </div>
       </div>
+
+      <PollChart v-if="totalVotes > 0" :options="poll.options" :totalVotes="totalVotes" />
 
       <div v-if="!isAuthenticated" class="info">
         <a :href="loginUrl">Connectez-vous</a> pour voter.

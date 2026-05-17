@@ -1,77 +1,90 @@
-# HEIG-VD DévProdMéd Course - Mini-projet
+# Application de sondage — WebMobUI HEIG-VD
 
-Ce dépôt contient le mini-projet à réaliser dans le cadre du cours
-_"[Développement de produit média (DévProdMéd)](https://github.com/heig-vd-devprodmed-course/heig-vd-devprodmed-course)"_
-enseigné à la
-[Haute Ecole d'Ingénierie et de Gestion du Canton de Vaud (HEIG-VD)](https://heig-vd.ch),
-Suisse.
+Ce projet est réalisé dans le cadre du cours _Web & Mobile UI_ enseigné à la
+[Haute Ecole d'Ingénierie et de Gestion du Canton de Vaud (HEIG-VD)](https://heig-vd.ch), Suisse.
 
-## Objectif du mini-projet
+L'objectif est de créer une application fullstack de sondage mêlant backend Laravel et frontend Vue.js.
 
-L'objectif de ce mini-projet est de créer un réseau social simple en utilisant le
-framework [Laravel](https://laravel.com/). Ce projet permettra de mettre en pratique les concepts
-appris dans le cours.
+## Stack technique
 
-## Pré-requis
+- Backend : Laravel 12
+- Frontend : Vue.js 3 (Composition API)
+- Base de données : SQLite
+- Build : Vite
+- Graphiques : Chart.js
 
-Afin de lancer ce projet, une stack compatible avec Laravel, est requise.
+## Prérequis
 
-Voici les pré-requis nécessaires :
+- PHP 8.4+
+- Composer
+- Node.js 22+
+- npm
 
-- PHP >= 8.0.
-- Composer.
-- Node.js et npm.
-- Une base de données (MySQL, PostgreSQL, SQLite, etc.).
-- Un serveur web (Apache, Nginx, etc.).
+## Installation
 
-[Laravel Herd](https://helm.sh/docs/charts/laravel/) est recommandé pour une installation facile de Laravel et de ses dépendances.
+```bash
+git clone git@github.com:ellambg/WebMobUi53-fullstack.git
+cd WebMobUi53-fullstack
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+npm install
+```
 
-## Développement local
+## Lancer l'application
 
-Pour développer et tester le mini-projet en local, voici les étapes à suivre :
+Dans deux terminaux séparés :
 
-1. Forker ce dépôt
+```bash
+# Terminal 1 — Backend
+php artisan serve
 
-2. Installer les dépendances avec npm et Composer :
+# Terminal 2 — Frontend
+npm run dev
+```
 
-    ```bash
-    npm install && npm run build
+L'application est accessible sur **http://127.0.0.1:8000**
 
-    composer install
-    ```
+## Utilisation
 
-3. Copier le fichier `.env.example` en `.env`.
-4. Modifier les variables d'environnement si nécessaire (optionnel).
-5. Générer la clé d'application Laravel :
+1. Créer un compte via **/auth/register**
+2. Se connecter via **/auth/login**
+3. Accéder au dashboard via **/polls/dashboard**
+4. Créer un sondage et copier le lien de partage
+5. Partager le lien — toute personne connectée peut voter
 
-    ```bash
-    php artisan key:generate
-    ```
+## Fonctionnalités
 
-6. Créer le lien symbolique pour les fichiers téléversés :
+- Dashboard des sondages (créer, modifier, supprimer)
+- Lien de partage par token unique
+- Page de vote accessible via token
+- Résultats en temps réel (polling toutes les 5 secondes)
+- Graphique en barres des résultats
+- Sondages en brouillon ou lancés
+- Choix simple ou multiple
+- Résultats publics ou privés
+- Durée configurable en secondes
 
-    ```bash
-    php artisan storage:link
-    ```
+## Architecture frontend
 
-7. Créer la base de données et exécuter les migrations :
+- `AppPollDashboard.vue` — application Vue du dashboard
+- `AppPollVote.vue` — application Vue de la page de vote
+- `components/PollTable.vue` — tableau des sondages
+- `components/PollForm.vue` — formulaire création/édition
+- `components/PollChart.vue` — graphique des résultats
+- `stores/usePollStore.js` — store réactif des sondages
+- `composables/useFetchApi.js` — composable pour les appels API
+- `composables/usePolling.js` — composable pour le polling
 
-    ```bash
-    php artisan migrate
-    ```
+## API endpoints
 
-    S'il est nécessaire de réinitialiser la base de données, utiliser la commande `php artisan migrate:reset` puis `php artisan migrate` à nouveau.
-
-8. Optionnel : en mode développement, il est possible de peupler la base de données avec des données fictives :
-
-    ```bash
-    php artisan db:seed
-    ```
-
-9. Démarrer le serveur de développement Laravel :
-
-    ```bash
-    composer run dev
-    ```
-
-L'application sera accessible à l'adresse <http://127.0.0.1:8000>.
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| GET | /api/v1/polls | Liste des sondages de l'utilisateur |
+| POST | /api/v1/polls | Créer un sondage |
+| PUT | /api/v1/polls/{id} | Modifier un sondage |
+| DELETE | /api/v1/polls/{id} | Supprimer un sondage |
+| GET | /api/v1/polls/{token} | Afficher un sondage |
+| POST | /api/v1/polls/{token}/vote | Voter |
+| GET | /api/v1/polls/{token}/results | Résultats |
