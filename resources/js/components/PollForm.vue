@@ -12,12 +12,12 @@ const { createPoll, updatePoll } = usePollStore();
 
 const question = ref(props.poll?.question ?? '');
 const title = ref(props.poll?.title ?? '');
-const is_draft = ref(props.poll?.is_draft ?? true);
-const allow_multiple_choices = ref(props.poll?.allow_multiple_choices ?? false);
-const results_public = ref(props.poll?.results_public ?? false);
+const is_draft = ref(Boolean(props.poll?.is_draft ?? true));
+const allow_multiple_choices = ref(Boolean(props.poll?.allow_multiple_choices ?? false));
+const results_public = ref(Boolean(props.poll?.results_public ?? false));
 const duration = ref(props.poll?.duration ?? null);
 const options = ref(props.poll?.options?.map(o => ({ label: o.label })) ?? [{ label: '' }, { label: '' }]);
-const allow_vote_change = ref(props.poll?.allow_vote_change ?? false);
+const allow_vote_change = ref(Boolean(props.poll?.allow_vote_change ?? false));
 
 const error = ref(null);
 

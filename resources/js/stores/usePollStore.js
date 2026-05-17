@@ -24,7 +24,7 @@ export function usePollStore() {
   async function updatePoll(id, data) {
     const result = await fetchApi({ url: 'polls/' + id, method: 'PUT', data });
     const index = polls.value.findIndex(p => p.id === id);
-    if (index !== -1) polls.value[index] = result;
+    if (index !== -1) polls.value.splice(index, 1, result);
     return result;
   }
 

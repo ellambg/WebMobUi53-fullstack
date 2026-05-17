@@ -30,7 +30,15 @@ class ApiPollController extends Controller
         }
 
         $user = $request->user();
+        $isOwner = $user && $poll->user_id === $user->id;
         $hasVoted = $user ? $poll->votes()->where('user_id', $user->id)->exists() : false;
+
+        // Cacher les votes si résultats privés et pas propriétaire
+        if (!$poll->results_public && !$isOwner) {
+            $poll->options->each(function ($option) {
+                $option->votes_count = null;
+            });
+        }
 
         return response()->json(array_merge($poll->toArray(), ['has_voted' => $hasVoted]));
     }
@@ -108,6 +116,7 @@ class ApiPollController extends Controller
             }
         }
 
+        $poll->refresh();
         return response()->json($poll->load('options'));
     }
 
