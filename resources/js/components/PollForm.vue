@@ -17,6 +17,7 @@ const allow_multiple_choices = ref(props.poll?.allow_multiple_choices ?? false);
 const results_public = ref(props.poll?.results_public ?? false);
 const duration = ref(props.poll?.duration ?? null);
 const options = ref(props.poll?.options?.map(o => ({ label: o.label })) ?? [{ label: '' }, { label: '' }]);
+const allow_vote_change = ref(props.poll?.allow_vote_change ?? false);
 
 const error = ref(null);
 
@@ -40,6 +41,7 @@ async function submit() {
     results_public: results_public.value,
     duration: duration.value ? parseInt(duration.value) : null,
     options: options.value,
+    allow_vote_change: allow_vote_change.value,
   };
 
   try {
@@ -78,6 +80,7 @@ async function submit() {
         <label><input v-model="is_draft" type="checkbox" /> Brouillon</label>
         <label><input v-model="allow_multiple_choices" type="checkbox" /> Choix multiples</label>
         <label><input v-model="results_public" type="checkbox" /> Résultats publics</label>
+        <label><input v-model="allow_vote_change" type="checkbox" /> Permettre de changer son vote</label>
       </div>
 
       <h3>Options (min. 2)</h3>

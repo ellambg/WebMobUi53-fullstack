@@ -89,6 +89,13 @@ async function submitVote() {
         });
         voteSuccess.value = true;
         await loadResults();
+        if (poll.value.allow_vote_change) {
+            setTimeout(() => {
+                voteSuccess.value = false;
+                selectedOptions.value = [];
+                alreadyVoted.value = true;
+            }, 2000);
+        }
     } catch (err) {
         const msg = err.data?.message;
         if (msg === "Already voted.") {
@@ -135,13 +142,16 @@ usePolling(loadResults, 5000);
                     v-for="option in poll.options"
                     :key="option.id"
                     class="option"
-                    :class="{ selected: selectedOptions.includes(option.id), voted: alreadyVoted }"
+                    :class="{
+                        selected: selectedOptions.includes(option.id),
+                        voted: alreadyVoted && !poll.allow_vote_change,
+                    }"
                     @click="
                         !voteSuccess &&
                         !isExpired &&
                         !poll.is_draft &&
                         isAuthenticated &&
-                        !alreadyVoted
+                        (!alreadyVoted || poll.allow_vote_change)
                             ? toggleOption(option.id)
                             : null
                     "
@@ -176,7 +186,10 @@ usePolling(loadResults, 5000);
                 <a :href="loginUrl">Connectez-vous</a> pour voter.
             </div>
 
-            <div v-else-if="alreadyVoted" class="info">
+            <div
+                v-else-if="alreadyVoted && !poll.allow_vote_change"
+                class="info"
+            >
                 Vous avez déjà voté à ce sondage.
             </div>
 
@@ -185,7 +198,7 @@ usePolling(loadResults, 5000);
                     !voteSuccess &&
                     !isExpired &&
                     !poll.is_draft &&
-                    !alreadyVoted
+                    (!alreadyVoted || poll.allow_vote_change)
                 "
             ></div>
             <div v-if="voteError" class="error">{{ voteError }}</div>
