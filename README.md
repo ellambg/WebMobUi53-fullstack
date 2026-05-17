@@ -51,9 +51,9 @@ L'application est accessible sur **http://127.0.0.1:8000**
 
 1. Créer un compte via **/auth/register**
 2. Se connecter via **/auth/login**
-3. Accéder au dashboard via **/polls/dashboard**
+3. Accéder au dashboard via le lien **"Mes sondages"** dans la navbar ou **/polls/dashboard**
 4. Créer un sondage et copier le lien de partage
-5. Partager le lien — toute personne connectée peut voter
+5. Partager le lien — toute personne connectée peut voter, les anonymes voient les résultats si publics
 
 ## Fonctionnalités
 
@@ -61,17 +61,26 @@ L'application est accessible sur **http://127.0.0.1:8000**
 - Lien de partage par token unique
 - Page de vote accessible via token
 - Résultats en temps réel (polling toutes les 5 secondes)
-- Graphique en barres des résultats
+- Graphique en barres des résultats (Chart.js)
 - Sondages en brouillon ou lancés
 - Choix simple ou multiple
 - Résultats publics ou privés
 - Durée configurable en secondes
+- Accès anonyme aux résultats si publics
+- **Bonus** : possibilité de modifier son vote si le sondage l'autorise
+
+## Choix techniques
+
+- **Store (`usePollStore`)** : centralise la liste des sondages pour éviter de passer des props entre composants et garantir la réactivité globale
+- **Composable `useFetchApi`** : abstraction des appels API avec gestion des headers CSRF et authentification Sanctum
+- **Composable `usePolling`** : polling générique réutilisable pour mettre à jour les résultats toutes les 5 secondes
+- **Deux apps Vue distinctes** : une pour le dashboard (authentifiée), une pour la page de vote (publique) — conformément au README_FRONT.md fourni
 
 ## Architecture frontend
 
 - `AppPollDashboard.vue` — application Vue du dashboard
 - `AppPollVote.vue` — application Vue de la page de vote
-- `components/PollTable.vue` — tableau des sondages
+- `components/PollTable.vue` — liste des sondages avec actions
 - `components/PollForm.vue` — formulaire création/édition
 - `components/PollChart.vue` — graphique des résultats
 - `stores/usePollStore.js` — store réactif des sondages
