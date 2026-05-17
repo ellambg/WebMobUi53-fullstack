@@ -19,7 +19,7 @@ class ApiPollController extends Controller
         return $polls;
     }
 
-    public function show(string $token)
+    public function show(Request $request, string $token)
     {
         $poll = Poll::with(['options' => function ($query) {
             $query->withCount('votes');
@@ -29,7 +29,10 @@ class ApiPollController extends Controller
             return response()->json(['message' => 'Poll not found.'], 404);
         }
 
-        return $poll;
+        $user = $request->user();
+        $hasVoted = $user ? $poll->votes()->where('user_id', $user->id)->exists() : false;
+
+        return response()->json(array_merge($poll->toArray(), ['has_voted' => $hasVoted]));
     }
 
     public function store(Request $request)
