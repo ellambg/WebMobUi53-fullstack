@@ -320,7 +320,6 @@ h1 {
     margin-bottom: 1rem;
     font-weight: 600;
 }
-
 .option.voted {
     cursor: not-allowed;
     opacity: 0.8;
